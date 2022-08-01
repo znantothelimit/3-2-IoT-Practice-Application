@@ -8,7 +8,7 @@
 #define MOTOR_MT_N_PIN 17 // MOTOR 포트 MT_N 핀 정의
 
 #define LEFT_ROTATE 1     // 반시계방향 회전 상수 정의
-#define RIGHT_ROTATE 2    // 시계방향 회정 상수 정의
+#define RIGHT_ROTATE 2    // 시계방향 회전 상수 정의
 
 void MotorStop(void); // 모터 제어 관련 함수 프로토타입 정의
 void MotorControl(unsigned char speed, unsigned char rotate);
