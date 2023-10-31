@@ -14,7 +14,8 @@
 #define SI 987
 #define DO_H 1046
 
-unsigned int SevenScale(unsigned char scale) // 각 음계에 해당하는 주파수 값을 선택하는 함수
+// scale로 들어온 숫자에 따라 C Major Scale 순서대로 해당하는 주파수 값 반환
+unsigned int SevenScale(unsigned char scale) 
 {
     unsigned int _ret = 0;
 
@@ -76,7 +77,7 @@ int main(void)
 
     int i;
 
-    for(i=0; i<8; i++)
+    for(i=0; i<8; i++) // C Major Scale 출력 위해 반복 
     {
         Change_FREQ(SevenScale(i)); // 각 음계에 해당하는 음 발생
         delay(500);                 // 500ms 지연

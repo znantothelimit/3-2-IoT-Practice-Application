@@ -10,8 +10,26 @@
 #define LEFT_ROTATE 1     // 반시계방향 회전 상수 정의
 #define RIGHT_ROTATE 2    // 시계방향 회전 상수 정의
 
-void MotorStop(void); // 모터 제어 관련 함수 프로토타입 정의
-void MotorControl(unsigned char speed, unsigned char rotate);
+void MotorStop(void) // 모터 정지 함수 -> P핀과 N핀에 모두 LOW 신호 인가
+{
+    // P핀과 N핀 모두에 LOW 신호 인가 -> PWM 듀티비 0 인가
+    softPwmWrite(MOTOR_MT_N_PIN, 0); 
+    softPwmWrite(MOTOR_MT_P_PIN, 0);
+}
+
+void MotorControl(unsigned char speed, unsigned char rotate) // 인자로 받는 speed는 듀티비로 회전속도와 비례
+{
+    if(rotate == LEFT_ROTATE) // 반시계방향 회전을 위해
+    {
+        digitalWrite(MOTOR_MT_P_PIN, LOW); // P핀에 LOW인가
+        softPwmWrite(MOTOR_MT_N_PIN, speed); // N핀에 듀티비 인가(HIGH 신호)
+    }
+    else if(rotate == RIGHT_ROTATE)
+    {
+        digitalWrite(MOTOR_MT_N_PIN, LOW); // N핀에 LOW인가
+        softPwmWrite(MOTOR_MT_P_PIN, speed); // P핀에 듀티비 인가(HIGH 신호)
+    }
+}
 
 int main(void)
 {
@@ -40,24 +58,4 @@ int main(void)
     }
 
     return 0;
-}
-
-void MotorStop()
-{
-    softPwmWrite(MOTOR_MT_N_PIN, 0);
-    softPwmWrite(MOTOR_MT_P_PIN, 0);
-}
-
-void MotorControl(unsigned char speed, unsigned char rotate)
-{
-    if(rotate == LEFT_ROTATE)
-    {
-        digitalWrite(MOTOR_MT_P_PIN, LOW);
-        softPwmWrite(MOTOR_MT_N_PIN, speed);
-    }
-    else if(rotate == RIGHT_ROTATE)
-    {
-        digitalWrite(MOTOR_MT_N_PIN, LOW);
-        softPwmWrite(MOTOR_MT_P_PIN, speed);
-    }
 }

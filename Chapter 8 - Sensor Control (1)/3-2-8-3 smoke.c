@@ -14,17 +14,21 @@
 int ReadMcp3208ADC(unsigned char adcChannel) // MCP3208을 통한 A/D Converter Read 함수
 {
     unsigned char buff[3];                       // 3 Bytes Command Data
-    int nAdcValue = 0;                           // 0 0 0 0 0 Start SGL D2
+    int nAdcValue = 0;                           
 
-    buff[0] = 0x06 | ((adcChannel & 0x07) >> 2); // D1 D0 x x x x x x
-    buff[1] = ((adcChannel & 0x07) << 6);        // x x x x x x x x
-    buff[2] = 0x00;                              // Chip Select Low 신호 출력
+    /* Rpi to ADC 송신(Din) */
+    buff[0] = 0x06 | ((adcChannel & 0x07) >> 2); // 0 0 0 0 0 Start SGL D2 (start와 sgl은 1 set해주고, d2값은 채널에 따라)
+    buff[1] = ((adcChannel & 0x07) << 6);        // D1 D0 x x x x x x (d1, d0값은 채널에 따라, 현채널 0이므로 d2 d1 d0 모두 0)
+    buff[2] = 0x00;                              // x x x x x x x x
 
-    digitalWrite(CS_MCP3208, 0); // 설정한 채널로부터 데이터 획득
-    wiringPiSPIDataRW(SPI_CHANNEL, buff, 3);
+    digitalWrite(CS_MCP3208, 0); // Chip Select Low 신호 출력
+    
+    /* ADC to Rpi 수신(Dout) */
+    wiringPiSPIDataRW(SPI_CHANNEL, buff, 3); // 설정한 채널로부터 데이터 획득
 
-    buff[1] = 0x0F & buff[1];             // 하위 4자리 masking
-    nAdcValue = (buff[1] << 8) | buff[2]; // 12비트 변환 값 저장
+    buff[1] = 0x0F & buff[1];             // 0 0 0 0 B11 B10 B9 B8 (하위 4자리 masking)
+        // BUFF[2]에는 현재 B7 B6 B5 B4 B3 B2 B1 B1 저장되어있음
+    nAdcValue = (buff[1] << 8) | buff[2]; // buff 8bit 밀어줘서 자릿수 맞춰주고 OR연산해서 자릿수 그대로 내려오도록 12비트 변환 값 저장
 
     digitalWrite(CS_MCP3208, 1); // Chip Select High 신호 출력
 

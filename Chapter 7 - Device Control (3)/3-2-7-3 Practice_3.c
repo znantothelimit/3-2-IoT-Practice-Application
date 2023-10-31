@@ -47,7 +47,7 @@ int KeypadRead(void) // KEYPAD 버튼 눌림을 확인하여 nKeypadstate 상태
     for(i=0; i<MAX_KEY_BT_NUM; i++)      // 반복문 for, 매개변수 i, 0부터 시작하여 KEYPAD 버튼 최대 개수인 5 미만까지 +1, 아래 코드 반복
     {
         if(!digitalRead(KeypadTable[i])) // 조건문 if, KEYPAD 핀 테이블의 i번째 위치 신호를 읽어서 반전했을때(버튼의 동작 범위 지정)
-        {
+        {8
             nKeypadstate |= (1<<i);      // 현재 i의 값을 1 Left Shift하여 nKeypadstate 값과 OR연산 후 그 결과값을 저장
         }
     }

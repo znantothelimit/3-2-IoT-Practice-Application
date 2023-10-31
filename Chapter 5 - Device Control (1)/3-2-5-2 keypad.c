@@ -23,11 +23,12 @@ int KeypadRead(void) // KEYPAD 버튼 눌림을 확인하여 nKeypadstate 상태
     int i, nKeypadstate;
     nKeypadstate = 0;
 
-    for(i=0; i<MAX_KEY_BT_NUM; i++)
+    for(i=0; i<MAX_KEY_BT_NUM; i++) 
     {
-        if(!digitalRead(KeypadTable[i]))
+        if(!digitalRead(KeypadTable[i])) // 버튼 누를 시 LOW 신호가 인가되므로 !(NOT연산자)
         {
-            nKeypadstate |= (1<<i);
+            nKeypadstate |= (1<<i); // 비트를 좌측 시프트해가면서 어떤 버튼이 눌렸는지 nKeypadstate에 저장
+                                    // 만약 4개 버튼 중에 3번째가 눌렸다? ->  0 1 0 0 이므로 2^2=0x04
         }
     }
 
@@ -40,11 +41,11 @@ void LedControl(int LedNum, int Cmd) // 해당하는 LED 번호와 ON/OFF 명령
 
     for(i=0; i<MAX_LED_NUM; i++)
     {
-        if(i == LedNum)
+        if(i == LedNum) // LED 번호 일치하고
         {
-            if(Cmd == LED_ON)
+            if(Cmd == LED_ON) // Cmd가 LED_ON이면
             {
-                digitalWrite(LedPinTable[i], HIGH);
+                digitalWrite(LedPinTable[i], HIGH); // LED 켜라
             }
             else
             {
@@ -80,9 +81,9 @@ int main(void)
 
         for(i=0; i<MAX_KEY_BT_NUM; i++) // KEYPAD 상태 변수를 확인하여 LED ON/OFF 제어
         {
-            if(nKeypadstate & (1<<i))
+            if(nKeypadstate & (1<<i)) // 만약 해당 버튼의 비트 값이 셋되어 있다면
             {
-                LedControl(i, LED_ON);
+                LedControl(i, LED_ON); // 해당 버튼에 해당하는 LED ON
             }
             else
             {

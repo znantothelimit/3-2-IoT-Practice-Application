@@ -5,7 +5,8 @@
 #include <wiringPi.h>
 #include <softPwm.h>
 
-#define SERVO 18
+// 핀 꽂을 시 VCC가 red, GND가 brown!!!
+#define SERVO 18 // 서보 모터 핀 제어
 
 int main(void)
 {
@@ -16,6 +17,7 @@ int main(void)
         return 1;
     }
 
+    // 주기 200ms인 Pwm 생성 -> -90도(반시계방향) 회전 : 2.5%, 0도 회전 : 7.5%, +90도(시계방향) 회전 : 12.5%의 듀티비
     softPwmCreate(SERVO, 0, 200);
 
     while(1)
@@ -26,15 +28,15 @@ int main(void)
 
         if(str == 'c')
         {
-            softPwmWrite(SERVO, 15); // 0 degree
+            softPwmWrite(SERVO, 15); // 0도 회전 : 7.5% 듀티비 -> 200ms의 7.5%인 15ms
         }
         else if(str == 'r')
         {
-            softPwmWrite(SERVO, 25); // 90 degree
+            softPwmWrite(SERVO, 25); // +90도(시계방향) 회전 : 12.5% 듀티비 -> 200ms의 12.5%인 25ms 
         }
         else if(str == 'l')
         {
-            softPwmWrite(SERVO, 5); // -90 degree
+            softPwmWrite(SERVO, 5); // -90도(반시계방향) 회전 : 2.5% 듀티비 -> 200ms의 2.5인 5ms
         }
         else if(str == 'q')
         {

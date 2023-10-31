@@ -8,11 +8,11 @@
 
 int readSound(int nPin)
 {
-    int nSoundVal = 0;
+    int nSoundVal = 0; // HIGH(1)와 LOW(0)만 존재하는 값, LOW로 초기화
 
     nSoundVal = digitalRead(nPin);
 
-    if(nSoundVal == HIGH)
+    if(nSoundVal == HIGH) // 소리 감지되면 HIGH 신호 보내옴
     {
         printf("Sound Detected!\n");
     }
@@ -21,7 +21,7 @@ int readSound(int nPin)
         printf("No Sound Detected!\n");
     }
 
-    return nSoundVal;
+    return nSoundVal; 
 }
 
 int main(void)
@@ -33,7 +33,7 @@ int main(void)
         return 1;
     }
 
-    pinMode(SOUND_PIN, INPUT);
+    pinMode(SOUND_PIN, INPUT); // 사운드센서 핀 입력으로 설정
 
     while(1)
     {

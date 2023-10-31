@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
+#include <stdint.h> // uint8_t 자료형 사용 위함
 #include <wiringPi.h>
 
 // 펄스 HIGH, LOW 카운트 총 80bit 송수신 위해 83으로 설정 (3bit의 준비 과정 소요)
 #define MAXTIMINGS 83 
 #define DHTPIN 27 // DHTPIN GPIO 핀 정의
 
-// DHT11데이터를 저장할 배열, 각 데이터(요소) int형 8bit
+// DHT11데이터를 저장할 배열, 각 데이터(요소) int형 8bit 전역변수로 선언해야 함!
+// [0] : 습도(정수), [1] : 습도(소수), [2] : 온도(정수), [3] : 온도(소수), [4] : 체크섬 값이 저장됨
 int dht11_dat[5] = { 0, }; 
 
 void read_dht11_dat()
@@ -23,16 +24,16 @@ void read_dht11_dat()
        dht11_dat[4] : checksum */
     dht11_dat[0] = dht11_dat[1] = dht11_dat[2] = dht11_dat[3] = dht11_dat[4] = 0;
 
-    // DHT11 센서 핀 설정(라즈베리(mcu) -> DHT11 ; 출력)
+    /* DHT11 센서 핀 설정(라즈베리(mcu) -> DHT11 ; 출력) */
     pinMode(DHTPIN, OUTPUT); 
-    // MCU 시작 신호 전송(18ms의 LOW 신호)
-    digitalWrite(DHTPIN, LOW);
+        // MCU 시작 신호 전송 (18ms LOW -> 30us HIGH)
+    digitalWrite(DHTPIN, LOW); // 18ms의 LOW 신호 인가 후
     delay(18);
-
-    // MCU 시작 신호 받으면 20us의 응답
-    digitalWrite(DHTPIN, HIGH);
+    digitalWrite(DHTPIN, HIGH); // 30us의 HIGH 신호 인가
     delayMicroseconds(30);
-    // 이후 DHT11 센서 핀 설정 (DHT11 -> 라즈베리 ; 입력)
+
+
+    /* 이후 DHT11 센서 핀 설정 (DHT11 -> 라즈베리 ; 입력) */
     pinMode(DHTPIN, INPUT);
 
     for(i=0; i<MAXTIMINGS; i++)
@@ -59,7 +60,7 @@ void read_dht11_dat()
             break; // 만약 200ms되면 break;
         }
 
-        // 처음 3개 준비 신호 버리고, 짝수 펄스만 받음 -> pulse가 HIGH일때만 보겠다
+        // 처음 3개 준비 신호 버리고(DHT11 반응 신호의 프리앰블 Discard), 짝수 펄스(데이터는 항상 짝수 펄스에 옴)만 받음 -> pulse가 HIGH일때만 보겠다
         if((i >= 4) && ((i % 2) == 0)) 
         {
             dht11_dat[j / 8] <<= 1; // 해당 필터링된 신호 8bit 변수 안에 0번째부터 1bit씩 좌측 시프트, 초기에 0이므로 

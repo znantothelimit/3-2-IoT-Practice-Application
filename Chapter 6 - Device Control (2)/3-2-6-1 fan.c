@@ -6,8 +6,18 @@
 #define FAN_MT_P_PIN 20
 #define FAN_MT_N_PIN 21
 
-void FanOn(void);
-void FanOff(void);
+// FAN은 단방향 회전만 가능, 속도 제어 불가
+void FanOn(void) // FAN 동작하도록 함 | P핀에 HIGH, N핀에 LOW 인가
+{
+    digitalWrite(FAN_MT_P_PIN, HIGH);
+    digitalWrite(FAN_MT_N_PIN, LOW);
+}
+
+void FanOff(void) // FAN 정지토록 함 | P핀, N핀에 LOW 인가
+{
+    digitalWrite(FAN_MT_P_PIN, LOW);
+    digitalWrite(FAN_MT_N_PIN, LOW);
+}
 
 int main(void)
 {
@@ -31,14 +41,5 @@ int main(void)
     return 0;
 }
 
-void FanOn(void)
-{
-    digitalWrite(FAN_MT_P_PIN, HIGH);
-    digitalWrite(FAN_MT_N_PIN, LOW);
-}
 
-void FanOff(void)
-{
-    digitalWrite(FAN_MT_P_PIN, LOW);
-    digitalWrite(FAN_MT_N_PIN, LOW);
-}
+
